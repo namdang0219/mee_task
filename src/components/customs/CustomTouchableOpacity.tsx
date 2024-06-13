@@ -1,13 +1,18 @@
-import {
-	TouchableOpacity,
-	TouchableOpacityProps,
-} from "react-native";
+import { TouchableOpacity, TouchableOpacityProps } from "react-native";
 import React from "react";
 import { globalConstants } from "constants/constant";
 
-const CustomTouchableOpacity = ({ children }: TouchableOpacityProps) => {
+const CustomTouchableOpacity = ({
+	children,
+	style,
+	onPress,
+}: TouchableOpacityProps) => {
 	return (
-		<TouchableOpacity activeOpacity={globalConstants.activeOpacity}>
+		<TouchableOpacity
+			onPress={onPress}
+			style={style}
+			activeOpacity={globalConstants.activeOpacity}
+		>
 			{children}
 		</TouchableOpacity>
 	);
