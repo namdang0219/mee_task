@@ -1,11 +1,18 @@
+import AboutIcon from "./AboutIcon";
 import AnalyticIcon from "./AnalyticIcon";
 import AppleIcon from "./AppleIcon";
 import CalendarIcon from "./CalendarIcon";
 import FacebookIcon from "./FacebookIcon";
 import GoogleIcon from "./GoogleIcon";
+import HelpIcon from "./HelpIcon";
 import HomeIcon from "./HomeIcon";
+import LanguageIcon from "./LanguageIcon";
+import LogoutIcon from "./LogoutIcon";
 import MenuIcon from "./MenuIcon";
 import NewTaskIcon from "./NewTaskIcon";
+import NotificationIcon from "./NotificationIcon";
+import PrivacyIcon from "./PrivacyIcon";
+import SettingIcon from "./SettingIcon";
 
 export {
 	HomeIcon,
@@ -16,4 +23,11 @@ export {
 	GoogleIcon,
 	FacebookIcon,
 	AppleIcon,
+	NotificationIcon,
+	LanguageIcon,
+	SettingIcon,
+	AboutIcon,
+	PrivacyIcon,
+	HelpIcon,
+	LogoutIcon,
 };

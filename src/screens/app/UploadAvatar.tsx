@@ -6,12 +6,70 @@ import { Button } from "components/buttons";
 import { useNavigation, useTheme } from "@react-navigation/native";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import { CustomTouchableOpacity } from "components/customs";
+import { useActionSheet } from "@expo/react-native-action-sheet";
+import * as ImagePicker from "expo-image-picker";
 
 const UploadAvatar = () => {
 	const { navigate } = useNavigation<any>();
 	const { colors } = useTheme();
+	const { showActionSheetWithOptions } = useActionSheet();
+	const [image, setImage] = React.useState<string>("");
 
-	const avatar = "";
+	const handleSelectAvatar = () => {
+		const options = ["Take a photo", "Choose from galerry", "Cancel"];
+		const cancelButtonIndex = 2;
+		showActionSheetWithOptions(
+			{
+				options,
+				cancelButtonIndex,
+			},
+			(selectedIndex: number | undefined) => {
+				switch (selectedIndex) {
+					case 1:
+						// Choose from galerry
+						pickImage();
+						break;
+					case 0:
+						// Take a photo
+						takePhoto()
+						break;
+					case cancelButtonIndex:
+					// Canceled
+				}
+			}
+		);
+	};
+
+	const pickImage = async () => {
+		// No permissions request is necessary for launching the image library
+		let result = await ImagePicker.launchImageLibraryAsync({
+			mediaTypes: ImagePicker.MediaTypeOptions.All,
+			allowsEditing: true,
+			aspect: [1, 1],
+			quality: 1,
+		});
+		if (!result.canceled) {
+			setImage(result.assets[0].uri);
+		}
+	};
+
+	const takePhoto = async () => {
+		// Ask for camera permissions
+		const permissionResult = await ImagePicker.requestCameraPermissionsAsync();
+    if (permissionResult.granted === false) {
+      alert("You've refused to allow this appp to access your camera!");
+      return;
+    }
+    let result = await ImagePicker.launchCameraAsync({
+      allowsEditing: true,
+      aspect: [1, 1],
+      quality: 1,
+			cameraType: ImagePicker.CameraType.front,
+    });
+    if (!result.canceled) {
+      setImage(result.assets[0].uri);
+    }
+  };
 
 	// CreateUserInfo styles
 	const styles = StyleSheet.create({
@@ -41,17 +99,20 @@ const UploadAvatar = () => {
 				Upload your avatar
 			</TitleLarge>
 			<View style={styles.avatarContainer}>
-				{avatar ? (
-					<CustomTouchableOpacity>
+				{image ? (
+					<CustomTouchableOpacity onPress={handleSelectAvatar}>
 						<Image
 							source={{
-								uri: "https://images.unsplash.com/photo-1534299898413-786c624f93eb?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+								uri: image,
 							}}
 							style={styles.avatar}
 						></Image>
 					</CustomTouchableOpacity>
 				) : (
-					<CustomTouchableOpacity style={styles.avatar}>
+					<CustomTouchableOpacity
+						onPress={handleSelectAvatar}
+						style={styles.avatar}
+					>
 						<AntDesign name="user" size={60} color="#8A8A8A" />
 					</CustomTouchableOpacity>
 				)}
@@ -60,13 +121,21 @@ const UploadAvatar = () => {
 			<View style={{ marginTop: "auto", marginBottom: 16 }}>
 				<CustomTouchableOpacity
 					style={{ alignItems: "center", marginBottom: 18 }}
-					onPress={() => navigate('App', { screen: "BottomTab" })}
+					onPress={() =>
+						navigate("AppStack", { screen: "BottomTab" })
+					}
 				>
 					<Text style={{ color: colors.primary, fontSize: 16 }}>
 						Skip
 					</Text>
 				</CustomTouchableOpacity>
-				<Button onPress={() => navigate("AppStack", {screen: 'BottomTab'})}>Save</Button>
+				<Button
+					onPress={() =>
+						navigate("AppStack", { screen: "BottomTab" })
+					}
+				>
+					Save
+				</Button>
 			</View>
 		</SafeView>
 	);

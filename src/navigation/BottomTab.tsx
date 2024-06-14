@@ -26,9 +26,10 @@ const BottomTab = () => {
 					animation: "shift",
 					tabBarStyle: { paddingHorizontal: 15, height: 85 },
 					tabBarShowLabel: true,
+					tabBarLabelStyle: {fontSize: 10},
 					headerShown: false,
 					tabBarActiveTintColor: primaryColor,
-					tabBarIconStyle: { marginBottom: 6 },
+					tabBarIconStyle: { marginBottom: 6, transform: [{ scale: 0.8 }] },
 					tabBarIcon: ({ focused }) => {
 						function iconColor(): string {
 							if (focused) {

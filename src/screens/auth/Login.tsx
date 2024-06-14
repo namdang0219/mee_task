@@ -34,7 +34,11 @@ const Login = () => {
 					Forgot Password?
 				</ThemedText>
 			</CustomTouchableOpacity>
-			<Button onPress={() => navigate("BottomTab")}>Login</Button>
+			<Button
+				onPress={() => navigate("AppStack", { screen: "BottomTab" })}
+			>
+				Login
+			</Button>
 			<Text style={{ textAlign: "center", marginTop: 20 }}>
 				<ThemedText>
 					Don't have an account?<Text> </Text>

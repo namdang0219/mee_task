@@ -4,7 +4,11 @@ import { globalConstants } from "constants/constant";
 import { useTheme } from "@react-navigation/native";
 import { ThemedText } from "components/themed";
 
-const Input = ({ style, placeholder }: TextInputProps) => {
+const Input = ({
+	style,
+	placeholder,
+	error,
+}: TextInputProps & { error?: string }) => {
 	const { colors } = useTheme();
 	return (
 		<View style={{ position: "relative" }}>
@@ -16,24 +20,27 @@ const Input = ({ style, placeholder }: TextInputProps) => {
 						paddingHorizontal: globalConstants.padding,
 						paddingVertical: 18,
 						borderRadius: globalConstants.borderRadius,
+						color: colors.text,
 					},
 					style,
 				]}
 				autoComplete="off"
 				autoCapitalize="none"
-        onFocus={() => null}
+				onFocus={() => null}
 			/>
-			{/* <Text
-				style={{
-					position: "absolute",
-					bottom: 5,
-					left: 20,
-					fontSize: 12,
-					color: "red",
-				}}
-			>
-				An error has occur!
-			</Text> */}
+			{error && (
+				<Text
+					style={{
+						position: "absolute",
+						bottom: 5,
+						left: 20,
+						fontSize: 12,
+						color: "red",
+					}}
+				>
+					An error has occur!
+				</Text>
+			)}
 		</View>
 	);
 };
