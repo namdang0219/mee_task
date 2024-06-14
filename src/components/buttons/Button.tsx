@@ -3,6 +3,7 @@ import {
 	TextProps,
 	TouchableOpacity,
 	TouchableOpacityProps,
+	ActivityIndicator
 } from "react-native";
 import React from "react";
 import { useTheme } from "@react-navigation/native";
@@ -16,8 +17,9 @@ const Button = ({
 	children,
 	style,
 	textStyle = { fontSize: 18, fontWeight: "500" },
+	loading = false,
 	...props
-}: ButtonProps) => {
+}: ButtonProps & { loading?: boolean }) => {
 	const { colors } = useTheme();
 	return (
 		<TouchableOpacity
@@ -28,13 +30,13 @@ const Button = ({
 					height: 60,
 					justifyContent: "center",
 					alignItems: "center",
-					borderRadius: 10
+					borderRadius: 10,
 				},
 				style,
 			]}
 			{...props}
 		>
-			<Text style={[{ color: "white" }, textStyle]}>{children}</Text>
+			{loading ?<ActivityIndicator color='white'  /> : <Text style={[{ color: "white" }, textStyle]}>{children}</Text>}
 		</TouchableOpacity>
 	);
 };

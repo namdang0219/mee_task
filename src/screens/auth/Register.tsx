@@ -53,7 +53,13 @@ const Register = () => {
 				containerStyle={styles.checkboxContainer}
 				checkedColor={colors.primary}
 			/>
-			<Button onPress={() => navigate("Login")}>Register</Button>
+			<Button
+				onPress={() =>
+					navigate("AppStack", { screen: "CreateUserInfo" })
+				}
+			>
+				Register
+			</Button>
 			<Text style={{ textAlign: "center", marginTop: 20 }}>
 				<ThemedText>
 					Already have an account?<Text> </Text>
@@ -63,7 +69,7 @@ const Register = () => {
 						color: colors.primary,
 						fontWeight: "500",
 					}}
-					onPress={() => navigate("Register")}
+					onPress={() => navigate("Login")}
 				>
 					Login
 				</Text>

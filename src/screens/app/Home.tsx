@@ -1,12 +1,19 @@
 import React from "react";
 import { ThemedText } from "components/themed";
-import { FullView } from "components/layouts";
+import { SafeView } from "components/layouts";
+import { StyleSheet } from "react-native";
 
 const Home = () => {
+	const styles = StyleSheet.create({
+		container: {
+			paddingBottom: 0,
+		},
+	});
+
 	return (
-		<FullView>
-			<ThemedText>Nam</ThemedText>
-		</FullView>
+		<SafeView style={styles.container}>
+			<ThemedText style={{ marginTop: "auto" }}>Nam</ThemedText>
+		</SafeView>
 	);
 };
 

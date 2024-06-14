@@ -26,6 +26,7 @@ const BottomTab = () => {
 					animation: "shift",
 					tabBarStyle: { paddingHorizontal: 15, height: 85 },
 					tabBarShowLabel: true,
+					headerShown: false,
 					tabBarActiveTintColor: primaryColor,
 					tabBarIconStyle: { marginBottom: 6 },
 					tabBarIcon: ({ focused }) => {

@@ -24,7 +24,7 @@ const Login = () => {
 			<TitleLarge style={{ marginTop: 54, marginBottom: 40 }}>
 				Login
 			</TitleLarge>
-			<SubTitle style={{ marginBottom: 40 }}>Welcome to MeeTask</SubTitle>
+			<SubTitle style={{ marginBottom: 40 }}>Hi, Welcome back!</SubTitle>
 			<View>
 				<Input style={styles.input} placeholder="Email"></Input>
 				<Input style={styles.input} placeholder="Password"></Input>
@@ -34,7 +34,7 @@ const Login = () => {
 					Forgot Password?
 				</ThemedText>
 			</CustomTouchableOpacity>
-			<Button onPress={() => navigate("Register")}>Login</Button>
+			<Button onPress={() => navigate("BottomTab")}>Login</Button>
 			<Text style={{ textAlign: "center", marginTop: 20 }}>
 				<ThemedText>
 					Don't have an account?<Text> </Text>
