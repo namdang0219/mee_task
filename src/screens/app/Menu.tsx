@@ -6,7 +6,15 @@ import { ThemedText } from "components/themed";
 import { useNavigation, useTheme } from "@react-navigation/native";
 import { Entypo } from "@expo/vector-icons";
 import { CustomTouchableOpacity } from "components/customs";
-import { AboutIcon, HelpIcon, LanguageIcon, LogoutIcon, NotificationIcon, PrivacyIcon, SettingIcon } from "components/icons";
+import {
+	AboutIcon,
+	HelpIcon,
+	LanguageIcon,
+	LogoutIcon,
+	NotificationIcon,
+	PrivacyIcon,
+	SettingIcon,
+} from "components/icons";
 
 const Menu = () => {
 	const { colors } = useTheme();
@@ -51,7 +59,7 @@ const Menu = () => {
 						style={{
 							flexDirection: "row",
 							alignItems: "center",
-							gap: 16,
+							gap: 12,
 						}}
 					>
 						<Image

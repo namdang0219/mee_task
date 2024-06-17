@@ -1,12 +1,15 @@
 import { View, Image } from "react-native";
-import React from "react";
+import React, { useEffect } from "react";
 import { ThemedText } from "components/themed";
 import { SafeView } from "components/layouts";
 import { Button } from "components/buttons";
 import { useNavigation } from "@react-navigation/native";
+import { auth } from "../../../firebaseConfig";
+import { createUserWithEmailAndPassword } from "firebase/auth";
 
 const WalkThrough = () => {
 	const { navigate } = useNavigation<any>();
+	console.log(auth.currentUser)
 	return (
 		<SafeView>
 			<View
@@ -35,7 +38,10 @@ const WalkThrough = () => {
 					</ThemedText>
 				</View>
 			</View>
-			<Button onPress={() => navigate('Register')} style={{ marginBottom: 16 }}>
+			<Button
+				onPress={() => navigate("Register")}
+				style={{ marginBottom: 16 }}
+			>
 				Getting Started
 			</Button>
 		</SafeView>

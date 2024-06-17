@@ -9,11 +9,22 @@ import { Button } from "components/buttons";
 import { CheckBox } from "@rneui/themed";
 import { LoginMethod } from "modules";
 import { ThemedText } from "components/themed";
+import {useForm} from 'react-hook-form'
 
 const Register = () => {
 	const { colors } = useTheme();
 	const { navigate } = useNavigation<any>();
 	const [checked, setChecked] = React.useState(false);
+	// const {
+  //   control,
+  //   handleSubmit,
+  //   formState: { errors },
+  // } = useForm({
+  //   defaultValues: {
+  //     firstName: "",
+  //     lastName: "",
+  //   },
+  // })
 
 	// Register styles
 	const styles = StyleSheet.create({
