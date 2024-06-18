@@ -9,7 +9,6 @@ import { createUserWithEmailAndPassword } from "firebase/auth";
 
 const WalkThrough = () => {
 	const { navigate } = useNavigation<any>();
-	console.log(auth.currentUser)
 	return (
 		<SafeView>
 			<View

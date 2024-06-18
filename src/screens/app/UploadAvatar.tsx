@@ -1,5 +1,5 @@
 import { View, Text, StyleSheet, Image } from "react-native";
-import React from "react";
+import React, { useState } from "react";
 import { SafeView } from "components/layouts";
 import { TitleLarge } from "components/titles";
 import { Button } from "components/buttons";
@@ -8,12 +8,17 @@ import AntDesign from "@expo/vector-icons/AntDesign";
 import { CustomTouchableOpacity } from "components/customs";
 import { useActionSheet } from "@expo/react-native-action-sheet";
 import * as ImagePicker from "expo-image-picker";
+import { auth, storage } from "../../../firebaseConfig";
+import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+import { updateProfile } from "firebase/auth";
 
 const UploadAvatar = () => {
 	const { navigate } = useNavigation<any>();
 	const { colors } = useTheme();
 	const { showActionSheetWithOptions } = useActionSheet();
-	const [image, setImage] = React.useState<string>("");
+	const [image, setImage] = useState<string>("");
+	const [blobData, setBlobData] = useState<any>();
+	const [loading, setLoading] = useState<boolean>(false);
 
 	const handleSelectAvatar = () => {
 		const options = ["Take a photo", "Choose from galerry", "Cancel"];
@@ -31,7 +36,7 @@ const UploadAvatar = () => {
 						break;
 					case 0:
 						// Take a photo
-						takePhoto()
+						takePhoto();
 						break;
 					case cancelButtonIndex:
 					// Canceled
@@ -40,6 +45,7 @@ const UploadAvatar = () => {
 		);
 	};
 
+	// handle pick image from galerry
 	const pickImage = async () => {
 		// No permissions request is necessary for launching the image library
 		let result = await ImagePicker.launchImageLibraryAsync({
@@ -50,26 +56,33 @@ const UploadAvatar = () => {
 		});
 		if (!result.canceled) {
 			setImage(result.assets[0].uri);
+			// setBlob
+			const blob = await urlToBlob(image);
+			setBlobData(blob);
 		}
 	};
 
+	// handle take a photo from camera
 	const takePhoto = async () => {
 		// Ask for camera permissions
-		const permissionResult = await ImagePicker.requestCameraPermissionsAsync();
-    if (permissionResult.granted === false) {
-      alert("You've refused to allow this appp to access your camera!");
-      return;
-    }
-    let result = await ImagePicker.launchCameraAsync({
-      allowsEditing: true,
-      aspect: [1, 1],
-      quality: 1,
+		const permissionResult =
+			await ImagePicker.requestCameraPermissionsAsync();
+		if (permissionResult.granted === false) {
+			alert("You've refused to allow this appp to access your camera!");
+			return;
+		}
+		let result = await ImagePicker.launchCameraAsync({
+			allowsEditing: true,
+			aspect: [1, 1],
+			quality: 1,
 			cameraType: ImagePicker.CameraType.front,
-    });
-    if (!result.canceled) {
-      setImage(result.assets[0].uri);
-    }
-  };
+		});
+		if (!result.canceled) {
+			setImage(result.assets[0].uri);
+			const blob = await urlToBlob(image);
+			setBlobData(blob);
+		}
+	};
 
 	// CreateUserInfo styles
 	const styles = StyleSheet.create({
@@ -92,6 +105,91 @@ const UploadAvatar = () => {
 			color: "#8A8A8A",
 		},
 	});
+
+	// handle image to blob
+	const urlToBlob = (url: string) => {
+		if (!url) {
+			alert('Something went wrong. Please try again!');
+			return;
+		}
+		console.log(url);
+		return new Promise((resolve, reject) => {
+			const xhr = new XMLHttpRequest();
+			xhr.addEventListener("error", reject);
+			xhr.addEventListener("readystatechange", () => {
+				if (xhr.readyState === 4) {
+					resolve(xhr.response);
+				}
+			});
+			xhr.open("GET", url);
+			xhr.responseType = "blob"; // convert to blob
+			xhr.send();
+		});
+	};
+
+	// handle save image to firebase storage
+	const saveDataToFirestore = async () => {
+		// Create the file metadata
+		/** @type {any} */
+		const metadata = {
+			contentType: "image/jpeg",
+		};
+
+		// Upload file and metadata to the object 'images/mountains.jpg'
+		const storageRef = ref(storage, "avatar/" + Date.now());
+		const uploadTask = uploadBytesResumable(storageRef, blobData, metadata);
+
+		// Listen for state changes, errors, and completion of the upload.
+		uploadTask.on(
+			"state_changed",
+			(snapshot) => {
+				// Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
+				const progress =
+					(snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+				switch (snapshot.state) {
+					case "paused":
+						// Upload has been paused
+						break;
+					case "running":
+						// Upload is running
+						break;
+				}
+			},
+			(error) => {
+				switch (error.code) {
+					case "storage/unauthorized":
+						// User doesn't have permission to access the object
+						break;
+					case "storage/canceled":
+						// User canceled the upload
+						break;
+					case "storage/unknown":
+						// Unknown error occurred, inspect error.serverResponse
+						break;
+				}
+			},
+			() => {
+				// Upload completed successfully, now we can get the download URL
+				getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+					auth.currentUser &&
+						updateProfile(auth.currentUser, {
+							photoURL: downloadURL,
+						}).catch((error) => {
+							alert("An error occurred");
+						});
+					setLoading(false);
+				});
+			}
+		);
+	};
+
+	// handle save button click
+	const handleSave = async () => {
+		setLoading(true);
+		saveDataToFirestore();
+		setLoading(false);
+		navigate("AppStack", { screen: "BottomTab" });
+	};
 
 	return (
 		<SafeView>
@@ -129,11 +227,7 @@ const UploadAvatar = () => {
 						Skip
 					</Text>
 				</CustomTouchableOpacity>
-				<Button
-					onPress={() =>
-						navigate("AppStack", { screen: "BottomTab" })
-					}
-				>
+				<Button loading={loading} onPress={handleSave}>
 					Save
 				</Button>
 			</View>

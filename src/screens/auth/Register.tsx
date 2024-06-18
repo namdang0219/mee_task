@@ -9,22 +9,61 @@ import { Button } from "components/buttons";
 import { CheckBox } from "@rneui/themed";
 import { LoginMethod } from "modules";
 import { ThemedText } from "components/themed";
-import {useForm} from 'react-hook-form'
+import { Controller, useForm } from "react-hook-form";
+import * as Yup from "yup";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../../../firebaseConfig";
+
+interface RegisterProps {
+	email: string;
+	password: string;
+}
+
+// Register Validation Schema
+const registerSchema = Yup.object().shape({
+	email: Yup.string()
+		.email("Please enter a valid email address")
+		.required("Email is required"),
+	password: Yup.string()
+		.required("Password is required")
+		.min(6, "Password length should be at least 6 characters")
+		.max(12, "Password cannot exceed more than 12 characters"),
+	cpassword: Yup.string()
+		.required("Confirm Password is required")
+		.oneOf([Yup.ref("password")], "Passwords do not match")
+		.min(6, "Password length should be at least 6 characters")
+		.max(12, "Password cannot exceed more than 12 characters"),
+});
 
 const Register = () => {
 	const { colors } = useTheme();
 	const { navigate } = useNavigation<any>();
 	const [checked, setChecked] = React.useState(false);
-	// const {
-  //   control,
-  //   handleSubmit,
-  //   formState: { errors },
-  // } = useForm({
-  //   defaultValues: {
-  //     firstName: "",
-  //     lastName: "",
-  //   },
-  // })
+
+	const {
+		control,
+		handleSubmit,
+		formState: { errors, isSubmitting },
+	} = useForm({
+		defaultValues: {
+			email: "",
+			password: "",
+		},
+		mode: "onChange",
+		resolver: yupResolver(registerSchema),
+	});
+
+	// handle Registration
+	const handleRegister = async ({ email, password }: RegisterProps) => {
+		if (!checked) return alert("Please accept the terms and conditions");
+		try {
+			await createUserWithEmailAndPassword(auth, email, password);
+			navigate("AppStack", { screen: "CreateUserInfo" });
+		} catch (error) {
+			console.log(error);
+		}
+	};
 
 	// Register styles
 	const styles = StyleSheet.create({
@@ -49,12 +88,56 @@ const Register = () => {
 			</TitleLarge>
 			<SubTitle style={{ marginBottom: 40 }}>Welcome to MeeTask</SubTitle>
 			<View>
-				<Input style={styles.input} placeholder="Email"></Input>
-				<Input style={styles.input} placeholder="Password"></Input>
-				<Input
-					style={styles.input}
-					placeholder="Confirm Password"
-				></Input>
+				<Controller
+					control={control}
+					rules={{
+						required: true,
+					}}
+					render={({ field: { onChange, onBlur } }) => (
+						<Input
+							style={styles.input}
+							placeholder="Email"
+							onBlur={onBlur}
+							onChangeText={onChange}
+							error={errors.email?.message}
+						></Input>
+					)}
+					name="email"
+				/>
+
+				<Controller
+					control={control}
+					rules={{
+						required: true,
+					}}
+					render={({ field: { onChange, onBlur } }) => (
+						<Input
+							style={styles.input}
+							placeholder="Password"
+							onBlur={onBlur}
+							onChangeText={onChange}
+							error={errors.password?.message}
+						></Input>
+					)}
+					name="password"
+				/>
+
+				<Controller
+					control={control}
+					rules={{
+						required: true,
+					}}
+					render={({ field: { onChange, onBlur } }) => (
+						<Input
+							style={styles.input}
+							placeholder="Confirm Password"
+							onBlur={onBlur}
+							onChangeText={onChange}
+							error={errors.cpassword?.message}
+						></Input>
+					)}
+					name="cpassword"
+				/>
 			</View>
 			<CheckBox
 				title="Accept all terms and privacy "
@@ -65,9 +148,8 @@ const Register = () => {
 				checkedColor={colors.primary}
 			/>
 			<Button
-				onPress={() =>
-					navigate("AppStack", { screen: "CreateUserInfo" })
-				}
+				onPress={handleSubmit(handleRegister)}
+				loading={isSubmitting}
 			>
 				Register
 			</Button>
