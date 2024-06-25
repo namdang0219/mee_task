@@ -17,7 +17,6 @@ const UploadAvatar = () => {
 	const { colors } = useTheme();
 	const { showActionSheetWithOptions } = useActionSheet();
 	const [image, setImage] = useState<string>("");
-	const [blobData, setBlobData] = useState<any>();
 	const [loading, setLoading] = useState<boolean>(false);
 
 	const handleSelectAvatar = () => {
@@ -56,9 +55,6 @@ const UploadAvatar = () => {
 		});
 		if (!result.canceled) {
 			setImage(result.assets[0].uri);
-			// setBlob
-			const blob = await urlToBlob(image);
-			setBlobData(blob);
 		}
 	};
 
@@ -79,8 +75,6 @@ const UploadAvatar = () => {
 		});
 		if (!result.canceled) {
 			setImage(result.assets[0].uri);
-			const blob = await urlToBlob(image);
-			setBlobData(blob);
 		}
 	};
 
@@ -110,25 +104,37 @@ const UploadAvatar = () => {
 	const urlToBlob = (url: string) => {
 		if (!url) {
 			alert('Something went wrong. Please try again!');
+			setImage('')
 			return;
 		}
-		console.log(url);
+		
 		return new Promise((resolve, reject) => {
 			const xhr = new XMLHttpRequest();
-			xhr.addEventListener("error", reject);
+			xhr.addEventListener("error", (error) => {
+					console.error('XHR Error:', error);
+					reject(new Error('Failed to fetch blob from URL.'));
+			});
 			xhr.addEventListener("readystatechange", () => {
-				if (xhr.readyState === 4) {
-					resolve(xhr.response);
-				}
+					if (xhr.readyState === 4) {
+							if (xhr.status === 200) {
+									resolve(xhr.response);
+									// console.log('Request successfully completed');
+							} else {
+									console.error('Error fetching blob:', xhr.status, xhr.statusText);
+									reject(new Error(`Failed to fetch blob. Status: ${xhr.status}`));
+							}
+					}
 			});
 			xhr.open("GET", url);
 			xhr.responseType = "blob"; // convert to blob
 			xhr.send();
-		});
+	});
 	};
 
 	// handle save image to firebase storage
 	const saveDataToFirestore = async () => {
+		const blobData : any = await urlToBlob(image);
+		urlToBlob(image)
 		// Create the file metadata
 		/** @type {any} */
 		const metadata = {

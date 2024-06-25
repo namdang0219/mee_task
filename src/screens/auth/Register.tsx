@@ -44,7 +44,7 @@ const Register = () => {
 	const {
 		control,
 		handleSubmit,
-		formState: { errors, isSubmitting },
+		formState: { errors, isSubmitting, isValid },
 	} = useForm({
 		defaultValues: {
 			email: "",
@@ -57,11 +57,14 @@ const Register = () => {
 	// handle Registration
 	const handleRegister = async ({ email, password }: RegisterProps) => {
 		if (!checked) return alert("Please accept the terms and conditions");
+		if(!isValid) return
 		try {
 			await createUserWithEmailAndPassword(auth, email, password);
 			navigate("AppStack", { screen: "CreateUserInfo" });
-		} catch (error) {
-			console.log(error);
+		} catch (error: any) {
+			if(error.code === "auth/email-already-in-use") {
+				alert("Email already in use")
+			}
 		}
 	};
 

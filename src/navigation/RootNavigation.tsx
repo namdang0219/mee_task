@@ -8,7 +8,10 @@ const Stack = createNativeStackNavigator();
 
 const RootNavigation = () => {
 	const { user } = useAuth();
-	if (!user) return <Loading></Loading>;
+	if (!user)
+		setInterval(() => {
+			return <Loading></Loading>;
+		}, 1000);
 	return (
 		<Stack.Navigator
 			screenOptions={{

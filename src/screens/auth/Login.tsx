@@ -9,10 +9,54 @@ import { Button } from "components/buttons";
 import { LoginMethod } from "modules";
 import { CustomTouchableOpacity } from "components/customs";
 import { ThemedText } from "components/themed";
+import * as Yup from "yup";
+import { Controller, useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../../../firebaseConfig";
+
+interface LoginProps {
+	email: string;
+	password: string;
+}
+
+// login Validation Schema
+const loginSchema = Yup.object().shape({
+	email: Yup.string()
+		.email("Please enter a valid email address")
+		.required("Email is required"),
+	password: Yup.string()
+		.required("Password is required")
+		.min(6, "Password length should be at least 6 characters")
+		.max(12, "Password cannot exceed more than 12 characters"),
+});
 
 const Login = () => {
 	const { colors } = useTheme();
 	const { navigate } = useNavigation<any>();
+
+	const {
+		control,
+		handleSubmit,
+		formState: { errors, isSubmitting, isValid },
+	} = useForm({
+		defaultValues: {
+			email: "",
+			password: "",
+		},
+		mode: "onChange",
+		resolver: yupResolver(loginSchema),
+	});
+
+	const handleLogin = async ({ email, password }: LoginProps) => {
+		if (!isValid) return;
+		try {
+			await signInWithEmailAndPassword(auth, email, password);
+			navigate("AppStack", { screen: "BottomTab" });
+		} catch (error) {
+			console.log(error);
+		}
+	};
 
 	// Register styles
 	const styles = StyleSheet.create({
@@ -26,17 +70,45 @@ const Login = () => {
 			</TitleLarge>
 			<SubTitle style={{ marginBottom: 40 }}>Hi, Welcome back!</SubTitle>
 			<View>
-				<Input style={styles.input} placeholder="Email"></Input>
-				<Input style={styles.input} placeholder="Password"></Input>
+				<Controller
+					control={control}
+					rules={{
+						required: true,
+					}}
+					render={({ field: { onChange, onBlur } }) => (
+						<Input
+							style={styles.input}
+							placeholder="Email"
+							onBlur={onBlur}
+							onChangeText={onChange}
+							error={errors.email?.message}
+						></Input>
+					)}
+					name="email"
+				/>
+				<Controller
+					control={control}
+					rules={{
+						required: true,
+					}}
+					render={({ field: { onChange, onBlur } }) => (
+						<Input
+							style={styles.input}
+							placeholder="Password"
+							onBlur={onBlur}
+							onChangeText={onChange}
+							error={errors.password?.message}
+						></Input>
+					)}
+					name="password"
+				/>
 			</View>
 			<CustomTouchableOpacity style={{ marginBottom: 16 }}>
 				<ThemedText style={{ textAlign: "right" }}>
 					Forgot Password?
 				</ThemedText>
 			</CustomTouchableOpacity>
-			<Button
-				onPress={() => navigate("AppStack", { screen: "BottomTab" })}
-			>
+			<Button onPress={handleSubmit(handleLogin)} loading={isSubmitting}>
 				Login
 			</Button>
 			<Text style={{ textAlign: "center", marginTop: 20 }}>

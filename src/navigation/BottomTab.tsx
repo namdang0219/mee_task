@@ -4,7 +4,6 @@ import Home from "screens/app/Home";
 import Calendar from "screens/app/Calendar";
 import NewTask from "screens/app/NewTask";
 import Analytic from "screens/app/Analytic";
-import Menu from "screens/app/Menu";
 import { primaryColor } from "constants/color";
 import {
 	AnalyticIcon,
@@ -14,6 +13,7 @@ import {
 	NewTaskIcon,
 } from "components/icons";
 import { useTheme } from "@react-navigation/native";
+import MenuStack from "./Stacks/MenuStack";
 
 const Tab = createBottomTabNavigator();
 
@@ -26,10 +26,13 @@ const BottomTab = () => {
 					animation: "shift",
 					tabBarStyle: { paddingHorizontal: 15, height: 85 },
 					tabBarShowLabel: true,
-					tabBarLabelStyle: {fontSize: 10},
+					tabBarLabelStyle: { fontSize: 10 },
 					headerShown: false,
 					tabBarActiveTintColor: primaryColor,
-					tabBarIconStyle: { marginBottom: 6, transform: [{ scale: 0.8 }] },
+					tabBarIconStyle: {
+						marginBottom: 6,
+						transform: [{ scale: 0.8 }],
+					},
 					tabBarIcon: ({ focused }) => {
 						function iconColor(): string {
 							if (focused) {
@@ -50,7 +53,7 @@ const BottomTab = () => {
 											<NewTaskIcon />
 										) : route.name === "Analytic" ? (
 											<AnalyticIcon color={iconColor()} />
-										) : route.name === "Menu" ? (
+										) : route.name === "MenuStack" ? (
 											<MenuIcon color={iconColor()} />
 										) : (
 											<></>
@@ -74,7 +77,7 @@ const BottomTab = () => {
 				component={NewTask}
 			/>
 			<Tab.Screen name="Analytic" component={Analytic} />
-			<Tab.Screen name="Menu" component={Menu} />
+			<Tab.Screen name="MenuStack" component={MenuStack} />
 		</Tab.Navigator>
 	);
 };

@@ -4,10 +4,11 @@ import { SafeView } from "components/layouts";
 import { globalConstants } from "constants/constant";
 import { ThemedText } from "components/themed";
 import { useNavigation, useTheme } from "@react-navigation/native";
-import { Entypo } from "@expo/vector-icons";
+import { AntDesign } from "@expo/vector-icons";
 import { CustomTouchableOpacity } from "components/customs";
 import {
 	AboutIcon,
+	ArrowRight,
 	HelpIcon,
 	LanguageIcon,
 	LogoutIcon,
@@ -15,10 +16,19 @@ import {
 	PrivacyIcon,
 	SettingIcon,
 } from "components/icons";
+import { useAuth } from "contexts/auth-context";
+import { HeaderContainer } from "components/header";
+import { MenuItemProps } from "types/mixTypes";
+import { MenuItem } from "components/items";
+import { auth } from "../../../firebaseConfig";
+import { signOut } from "firebase/auth";
 
 const Menu = () => {
 	const { colors } = useTheme();
 	const { navigate } = useNavigation<any>();
+	const { user } = useAuth();
+	const avatar = user?.photoURL;
+	const { setUser } = useAuth();
 
 	// Menu styles
 	const styles = StyleSheet.create({
@@ -39,140 +49,74 @@ const Menu = () => {
 		},
 	});
 
-	const ArrowIconRight = () => {
-		return <Entypo name="chevron-thin-right" color={"gray"} size={20} />;
-	};
+	const userFeatures: MenuItemProps[] = [
+		{
+			id: 1,
+			title: "Notification",
+			to: "Notification",
+			icon: <NotificationIcon></NotificationIcon>,
+		},
+		{
+			id: 2,
+			title: "Language",
+			to: "Language",
+			icon: <LanguageIcon></LanguageIcon>,
+		},
+		{
+			id: 3,
+			title: "Setting",
+			to: "Setting",
+			icon: <SettingIcon></SettingIcon>,
+		},
+	];
+
+	const appFeatures = [
+		{
+			id: 1,
+			title: "About us",
+			to: "About us",
+			icon: <AboutIcon></AboutIcon>,
+		},
+		{
+			id: 2,
+			title: "Privacy",
+			to: "Privacy",
+			icon: <PrivacyIcon></PrivacyIcon>,
+		},
+		{
+			id: 3,
+			title: "Help",
+			to: "Help",
+			icon: <HelpIcon></HelpIcon>,
+		},
+		{
+			id: 4,
+			title: "Logout",
+			to: async () => {
+				await signOut(auth);
+				setUser(null);
+				navigate("AuthStack", { screen: "WalkThrought" });
+			},
+			icon: <LogoutIcon></LogoutIcon>,
+		},
+	];
 
 	return (
 		<SafeView style={{ paddingBottom: 0, paddingHorizontal: 0 }}>
-			<View style={styles.screenHeader}>
-				<ThemedText style={{ fontSize: 28, fontWeight: "500" }}>
-					Menu
-				</ThemedText>
-			</View>
+			<HeaderContainer
+				title="Menu"
+				style={{ paddingHorizontal: globalConstants.padding }}
+			></HeaderContainer>
 			<ScrollView style={{ padding: 0 }}>
-				<CustomTouchableOpacity
-					onPress={() => navigate("Profile")}
-					style={[styles.profileContainer, styles.bottomSpacing]}
-				>
-					<View
-						style={{
-							flexDirection: "row",
-							alignItems: "center",
-							gap: 12,
-						}}
-					>
-						<Image
-							source={{
-								uri: "https://plus.unsplash.com/premium_photo-1682095831819-df014ef95cc9?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-							}}
-							style={{
-								width: 60,
-								height: 60,
-								borderRadius: 1000,
-							}}
-						></Image>
-						<View>
-							<ThemedText
-								style={{
-									fontSize: 24,
-									fontWeight: "500",
-									marginBottom: 4,
-								}}
-							>
-								Mai Ngoc
-							</ThemedText>
-							<ThemedText
-								style={{
-									fontSize: 16,
-									fontWeight: "300",
-								}}
-								numberOfLines={1}
-							>
-								meetask.admin@gmail.com
-							</ThemedText>
-						</View>
-					</View>
-					<ArrowIconRight></ArrowIconRight>
-				</CustomTouchableOpacity>
+				<MenuProfile avatar={avatar} navigate={navigate}></MenuProfile>
 				<View style={styles.bottomSpacing}>
 					{userFeatures.map((item) => (
-						<CustomTouchableOpacity
-							key={item.id}
-							style={{
-								paddingHorizontal: globalConstants.padding,
-								paddingVertical: 10,
-								flexDirection: "row",
-								alignItems: "center",
-								justifyContent: "space-between",
-							}}
-						>
-							<View
-								style={{
-									flexDirection: "row",
-									alignItems: "center",
-									justifyContent: "center",
-									gap: 12,
-								}}
-							>
-								<View
-									style={{
-										width: 34,
-										height: 34,
-										justifyContent: "center",
-										alignItems: "center",
-									}}
-								>
-									{item.icon}
-								</View>
-								<ThemedText
-									style={{ fontSize: 18, fontWeight: "500" }}
-								>
-									{item.navigateTo}
-								</ThemedText>
-							</View>
-							<ArrowIconRight></ArrowIconRight>
-						</CustomTouchableOpacity>
+						<MenuItem key={item.id} item={item}></MenuItem>
 					))}
 				</View>
 				<View>
 					{appFeatures.map((item) => (
-						<CustomTouchableOpacity
-							key={item.id}
-							style={{
-								paddingHorizontal: globalConstants.padding,
-								paddingVertical: 10,
-								flexDirection: "row",
-								alignItems: "center",
-								justifyContent: "space-between",
-							}}
-						>
-							<View
-								style={{
-									flexDirection: "row",
-									alignItems: "center",
-									justifyContent: "center",
-									gap: 12,
-								}}
-							>
-								<View
-									style={{
-										width: 34,
-										height: 34,
-										justifyContent: "center",
-										alignItems: "center",
-									}}
-								>
-									{item.icon}
-								</View>
-								<ThemedText
-									style={{ fontSize: 18, fontWeight: "500" }}
-								>
-									{item.navigateTo}
-								</ThemedText>
-							</View>
-							<ArrowIconRight></ArrowIconRight>
-						</CustomTouchableOpacity>
+						<MenuItem key={item.id} item={item}></MenuItem>
 					))}
 				</View>
 			</ScrollView>
@@ -180,45 +124,84 @@ const Menu = () => {
 	);
 };
 
-const userFeatures = [
-	{
-		id: 1,
-		navigateTo: "Notification",
-		icon: <NotificationIcon></NotificationIcon>,
-	},
-	{
-		id: 2,
-		navigateTo: "Language",
-		icon: <LanguageIcon></LanguageIcon>,
-	},
-	{
-		id: 3,
-		navigateTo: "Setting",
-		icon: <SettingIcon></SettingIcon>,
-	},
-];
+function MenuProfile({ navigate, avatar }: { navigate: any; avatar: string }) {
+	const { colors } = useTheme();
+	const styles = StyleSheet.create({
+		bottomSpacing: {
+			borderBottomWidth: 5,
+			borderBottomColor: colors.inputBackground,
+		},
+		profileContainer: {
+			paddingHorizontal: globalConstants.padding,
+			paddingVertical: 10,
+			flexDirection: "row",
+			alignItems: "center",
+			justifyContent: "space-between",
+		},
+	});
+	return (
+		<CustomTouchableOpacity
+			onPress={() => navigate("Profile")}
+			style={[styles.profileContainer, styles.bottomSpacing]}
+		>
+			<View
+				style={{
+					flexDirection: "row",
+					alignItems: "center",
+					gap: 12,
+				}}
+			>
+				{avatar ? (
+					<Image
+						source={{
+							uri: avatar,
+						}}
+						style={{
+							width: 60,
+							height: 60,
+							borderRadius: 1000,
+						}}
+					></Image>
+				) : (
+					<View
+						style={[
+							{
+								width: 60,
+								height: 60,
+								borderRadius: 1000,
+								backgroundColor: colors.inputBackground,
+							},
+							{ alignItems: "center", justifyContent: "center" },
+						]}
+					>
+						<AntDesign name="user" size={30} color="#8A8A8A" />
+					</View>
+				)}
 
-const appFeatures = [
-	{
-		id: 1,
-		navigateTo: "About us",
-		icon: <AboutIcon></AboutIcon>,
-	},
-	{
-		id: 2,
-		navigateTo: "Privacy",
-		icon: <PrivacyIcon></PrivacyIcon>,
-	},
-	{
-		id: 3,
-		navigateTo: "Help",
-		icon: <HelpIcon></HelpIcon>,
-	},
-	{
-		id: 4,
-		navigateTo: "Logout",
-		icon: <LogoutIcon></LogoutIcon>,
-	},
-];
+				<View>
+					<ThemedText
+						style={{
+							fontSize: 24,
+							fontWeight: "500",
+							marginBottom: 4,
+						}}
+					>
+						Mai Ngoc
+					</ThemedText>
+					<ThemedText
+						style={{
+							fontSize: 16,
+							fontWeight: "300",
+						}}
+						numberOfLines={1}
+					>
+						meetask.admin@gmail.com
+					</ThemedText>
+				</View>
+			</View>
+			<ArrowRight></ArrowRight>
+		</CustomTouchableOpacity>
+	);
+}
 
 export default Menu;

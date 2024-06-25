@@ -1,6 +1,9 @@
 import AboutIcon from "./AboutIcon";
 import AnalyticIcon from "./AnalyticIcon";
 import AppleIcon from "./AppleIcon";
+import ArrowLeft from "./ArrowLeft";
+import ArrowRight from "./ArrowRight";
+import BackIcon from "./BackIcon";
 import CalendarIcon from "./CalendarIcon";
 import FacebookIcon from "./FacebookIcon";
 import GoogleIcon from "./GoogleIcon";
@@ -30,4 +33,7 @@ export {
 	PrivacyIcon,
 	HelpIcon,
 	LogoutIcon,
+	ArrowRight,
+	ArrowLeft,
+	BackIcon,
 };
