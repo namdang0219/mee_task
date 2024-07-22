@@ -11,6 +11,7 @@ import * as ImagePicker from "expo-image-picker";
 import { auth, storage } from "../../../firebaseConfig";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { updateProfile } from "firebase/auth";
+import { useAuth } from "contexts/auth-context";
 
 const UploadAvatar = () => {
 	const { navigate } = useNavigation<any>();
@@ -18,6 +19,7 @@ const UploadAvatar = () => {
 	const { showActionSheetWithOptions } = useActionSheet();
 	const [image, setImage] = useState<string>("");
 	const [loading, setLoading] = useState<boolean>(false);
+	const {user} = useAuth()
 
 	const handleSelectAvatar = () => {
 		const options = ["Take a photo", "Choose from galerry", "Cancel"];
@@ -221,7 +223,7 @@ const UploadAvatar = () => {
 					</CustomTouchableOpacity>
 				)}
 			</View>
-			<Text style={styles.userName}>Mai Ngoc</Text>
+			<Text style={styles.userName}>{user.displayName}</Text>
 			<View style={{ marginTop: "auto", marginBottom: 16 }}>
 				<CustomTouchableOpacity
 					style={{ alignItems: "center", marginBottom: 18 }}

@@ -5,9 +5,11 @@ import {
 	TextInputProps,
 	View,
 } from "react-native";
-import React from "react";
+import React, { useState } from "react";
 import { globalConstants } from "constants/constant";
 import { useTheme } from "@react-navigation/native";
+import { Feather } from "@expo/vector-icons";
+import { CustomTouchableOpacity } from "components/customs";
 
 const Input = ({
 	style,
@@ -15,9 +17,14 @@ const Input = ({
 	error,
 	onBlur,
 	onChangeText,
-	value,
+	secureTextEntry,
 }: TextInputProps & { error?: string | undefined }) => {
 	const { colors } = useTheme();
+	const [showPassword, setShowPassword] = useState(secureTextEntry);
+
+	const handleShowPassword = () => {
+		setShowPassword(!showPassword);
+	};
 
 	// Input styles
 	const styles = StyleSheet.create({
@@ -35,6 +42,7 @@ const Input = ({
 			fontSize: 12,
 			color: "red",
 		},
+		eye: { position: "absolute", right: 16, top: 20 },
 	});
 
 	return (
@@ -47,7 +55,32 @@ const Input = ({
 				autoComplete="off"
 				autoCapitalize="none"
 				autoCorrect={false}
+				secureTextEntry={showPassword}
 			/>
+			{secureTextEntry &&
+				(showPassword ? (
+					<CustomTouchableOpacity
+						onPress={handleShowPassword}
+						style={styles.eye}
+					>
+						<Feather
+							name="eye-off"
+							size={18}
+							color={colors.bottomIconDefault}
+						/>
+					</CustomTouchableOpacity>
+				) : (
+					<CustomTouchableOpacity
+						onPress={handleShowPassword}
+						style={styles.eye}
+					>
+						<Feather
+							name="eye"
+							size={18}
+							color={colors.bottomIconDefault}
+						/>
+					</CustomTouchableOpacity>
+				))}
 			{error && <Text style={styles.error}>{error}</Text>}
 		</View>
 	);

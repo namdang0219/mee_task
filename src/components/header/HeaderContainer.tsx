@@ -11,17 +11,23 @@ const HeaderContainer = ({
 	canGoBack,
 	style,
 	children,
-}: TextProps & { title: string | ReactNode; canGoBack?: boolean }) => {
+	whiteContent,
+}: TextProps & {
+	title: string | ReactNode;
+	canGoBack?: boolean;
+	whiteContent?: boolean;
+}) => {
 	const styles = StyleSheet.create({
 		screenHeader: {
-			paddingVertical: 5,
+			paddingBottom: 5,
+			paddingTop: 8,
 			flexDirection: "row",
 			justifyContent: "space-between",
 			alignItems: "center",
 			paddingHorizontal: globalConstants.padding,
 		},
 	});
-	const {goBack} = useNavigation()
+	const { goBack } = useNavigation();
 	return (
 		<View style={[styles.screenHeader, style]}>
 			{canGoBack ? (
@@ -33,13 +39,25 @@ const HeaderContainer = ({
 					}}
 					onPress={() => goBack()}
 				>
-					<BackIcon></BackIcon>
-					<ThemedText style={{ fontSize: 24, fontWeight: "600" }}>
+					<BackIcon whiteContent></BackIcon>
+					<ThemedText
+						style={{
+							fontSize: 24,
+							fontWeight: "600",
+							color: whiteContent ? "white" : "",
+						}}
+					>
 						{title}
 					</ThemedText>
 				</CustomTouchableOpacity>
 			) : (
-				<ThemedText style={{ fontSize: 24, fontWeight: "600" }}>
+				<ThemedText
+					style={{
+						fontSize: 24,
+						fontWeight: "600",
+						color: whiteContent ? "white" : "",
+					}}
+				>
 					{title}
 				</ThemedText>
 			)}

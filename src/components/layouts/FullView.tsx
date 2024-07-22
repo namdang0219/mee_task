@@ -1,4 +1,9 @@
-import { TouchableWithoutFeedback, ViewProps, Keyboard } from "react-native";
+import {
+	TouchableWithoutFeedback,
+	ViewProps,
+	Keyboard,
+	View,
+} from "react-native";
 import React, { ReactNode } from "react";
 import { ThemedView } from "components/themed";
 
@@ -9,7 +14,7 @@ const FullView = ({ children, style, ...props }: ViewProps) => {
 				style={{ flex: 1 }}
 				onPress={() => Keyboard.dismiss()}
 			>
-				{children}
+				<View style={{flex: 1}}>{children}</View>
 			</TouchableWithoutFeedback>
 		</ThemedView>
 	);

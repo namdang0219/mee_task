@@ -9,7 +9,7 @@ import { useAuth } from "contexts/auth-context";
 const Home = () => {
 	const { colors } = useTheme();
 	const { user } = useAuth();
-	console.log("🚀 ~ Home ~ user:", user);
+	// console.log("🚀 ~ Home ~ user:", user);
 
 	return (
 		<SafeView style={{ paddingBottom: 0 }}>

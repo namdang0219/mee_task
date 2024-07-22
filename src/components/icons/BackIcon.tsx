@@ -2,13 +2,13 @@ import React from "react";
 import { FontAwesome6 } from "@expo/vector-icons";
 import { useTheme } from "@react-navigation/native";
 
-const BackIcon = () => {
+const BackIcon = ({ whiteContent }: { whiteContent?: boolean }) => {
 	const { colors } = useTheme();
 	return (
 		<FontAwesome6
 			name="chevron-left"
 			size={20}
-			color={colors.text}
+			color={whiteContent ? "white" : colors.text}
 		></FontAwesome6>
 	);
 };

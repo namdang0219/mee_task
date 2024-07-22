@@ -26,9 +26,8 @@ import { signOut } from "firebase/auth";
 const Menu = () => {
 	const { colors } = useTheme();
 	const { navigate } = useNavigation<any>();
-	const { user } = useAuth();
+	const { user, setUser } = useAuth();
 	const avatar = user?.photoURL;
-	const { setUser } = useAuth();
 
 	// Menu styles
 	const styles = StyleSheet.create({
@@ -126,6 +125,7 @@ const Menu = () => {
 
 function MenuProfile({ navigate, avatar }: { navigate: any; avatar: string }) {
 	const { colors } = useTheme();
+	const { user } = useAuth();
 	const styles = StyleSheet.create({
 		bottomSpacing: {
 			borderBottomWidth: 5,
@@ -186,7 +186,7 @@ function MenuProfile({ navigate, avatar }: { navigate: any; avatar: string }) {
 							marginBottom: 4,
 						}}
 					>
-						Mai Ngoc
+						{user.displayName}
 					</ThemedText>
 					<ThemedText
 						style={{
@@ -195,7 +195,7 @@ function MenuProfile({ navigate, avatar }: { navigate: any; avatar: string }) {
 						}}
 						numberOfLines={1}
 					>
-						meetask.admin@gmail.com
+						{user.email}
 					</ThemedText>
 				</View>
 			</View>

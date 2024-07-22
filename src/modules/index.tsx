@@ -1,3 +1,5 @@
 import LoginMethod from "./LoginMethod";
+import NewTaskModal from "./NewTaskModal";
 
-export { LoginMethod };
+
+export { LoginMethod, NewTaskModal };

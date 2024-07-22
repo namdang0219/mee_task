@@ -57,13 +57,13 @@ const Register = () => {
 	// handle Registration
 	const handleRegister = async ({ email, password }: RegisterProps) => {
 		if (!checked) return alert("Please accept the terms and conditions");
-		if(!isValid) return
+		if (!isValid) return;
 		try {
 			await createUserWithEmailAndPassword(auth, email, password);
 			navigate("AppStack", { screen: "CreateUserInfo" });
 		} catch (error: any) {
-			if(error.code === "auth/email-already-in-use") {
-				alert("Email already in use")
+			if (error.code === "auth/email-already-in-use") {
+				alert("Email already in use");
 			}
 		}
 	};
@@ -120,6 +120,7 @@ const Register = () => {
 							onBlur={onBlur}
 							onChangeText={onChange}
 							error={errors.password?.message}
+							secureTextEntry
 						></Input>
 					)}
 					name="password"
@@ -137,6 +138,7 @@ const Register = () => {
 							onBlur={onBlur}
 							onChangeText={onChange}
 							error={errors.cpassword?.message}
+							secureTextEntry
 						></Input>
 					)}
 					name="cpassword"

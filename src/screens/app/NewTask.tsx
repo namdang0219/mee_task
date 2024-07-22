@@ -4,7 +4,7 @@ import React from 'react'
 const NewTask = () => {
   return (
     <View>
-      <Text>NewTask</Text>
+      <Text>NewTask 123</Text>
     </View>
   )
 }

@@ -1,11 +1,15 @@
-import { StyleSheet, TouchableOpacity } from "react-native";
+import {
+	StyleSheet,
+	TouchableOpacity,
+	TouchableOpacityProps,
+} from "react-native";
 import React from "react";
 import Svg, { Path } from "react-native-svg";
 import { LinearGradient } from "expo-linear-gradient";
 
-const NewTaskIcon = () => {
+const NewTaskIcon = ({ onPress }: TouchableOpacityProps) => {
 	return (
-		<TouchableOpacity activeOpacity={0.6}>
+		<TouchableOpacity activeOpacity={0.6} onPress={onPress}>
 			<LinearGradient
 				colors={["#A230ED", "#6B00D7"]}
 				start={{ x: 0, y: 0 }}
